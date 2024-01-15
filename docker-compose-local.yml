@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  mongo:
+    image: mongo:6.0.11
+    container_name: tech-challenge-producao-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27018:27017"

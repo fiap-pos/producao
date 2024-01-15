@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+  mongo:
+    image: mongo:6.0.11
+    container_name: tech-challenge-producao-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27018:27017"
+  app:
+    image: vwnunes/tech-challenge-61-producao:latest
+    container_name: tech-challenge-producao-app
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8083
+      MONGODB_DATABASE: tech_challenge_producao
+      MONGODB_URI: mongodb://root:root@mongo:27017
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongo
