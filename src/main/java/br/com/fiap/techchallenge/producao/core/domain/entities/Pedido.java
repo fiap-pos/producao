@@ -2,7 +2,6 @@ package br.com.fiap.techchallenge.producao.core.domain.entities;
 
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,9 @@
 package br.com.fiap.techchallenge.producao.adapters.repository;
 
 import br.com.fiap.techchallenge.producao.adapters.repository.mappers.PedidoMapper;
+import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.mongo.PedidoMongoRepository;
+import br.com.fiap.techchallenge.producao.adapters.repository.sqs.PedidoSqsPublisher;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
@@ -12,14 +14,16 @@ import java.util.List;
 
 @Repository
 public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPedidoOutputPort,
-        BuscaPedidosOutputPort, BuscarPedidoPorIdOutputPort {
+        BuscaPedidosOutputPort, BuscarPedidoOutputPort {
 
     private final PedidoMongoRepository pedidoMongoRepository;
     private final PedidoMapper pedidoMapper;
+    private final PedidoSqsPublisher pedidoSqsPublisher;
 
-    public PedidoRepository(PedidoMongoRepository pedidoMongoRepository, PedidoMapper pedidoMapper) {
+    public PedidoRepository(PedidoMongoRepository pedidoMongoRepository, PedidoMapper pedidoMapper, PedidoSqsPublisher pedidoSqsPublisher) {
         this.pedidoMongoRepository = pedidoMongoRepository;
         this.pedidoMapper = pedidoMapper;
+        this.pedidoSqsPublisher = pedidoSqsPublisher;
     }
 
     @Override
@@ -46,7 +50,9 @@ public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPed
         var pedidoBuscado = buscarPedidoPorId(id);
         pedidoBuscado.setStatus(status);
         var pedido = pedidoMongoRepository.save(pedidoBuscado);
-        return pedidoMapper.toPedidoDTO(pedido);
+        var pedidoDTO = pedidoMapper.toPedidoDTO(pedido);
+        pedidoSqsPublisher.publicaAtualizacaoFilaProducao(pedidoDTO);
+        return pedidoDTO;
     }
 
     @Override
@@ -55,7 +61,14 @@ public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPed
         return pedidoMapper.toPedidoDTO(pedidoBuscado);
     }
 
-    private br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido buscarPedidoPorId(String id){
+    @Override
+    public PedidoDTO buscarPorCodigo(Long codigo) {
+        var pedido = pedidoMongoRepository.findByCodigo(codigo).orElseThrow(
+                () -> new EntityNotFoundException("Pedido com codigo " + codigo + " não encontrado") );
+        return pedidoMapper.toPedidoDTO(pedido);
+    }
+
+    private Pedido buscarPedidoPorId(String id){
         return pedidoMongoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido " + id + " não encontrado"));
     }

@@ -39,7 +39,7 @@ public class PedidoController extends ControllerBase{
         this.buscarPedidoPorIdInputPort = buscarPedidoPorIdInputPort;
         this.pedidoMapper = pedidoMapper;
     }
-/*
+
     @Operation(summary = "Busca todos os pedidos")
     @GetMapping
     public ResponseEntity<List<PedidoResponse>> buscarTodos(){
@@ -49,7 +49,7 @@ public class PedidoController extends ControllerBase{
     }
 
     @Operation(summary = "Busca pedidos para serem exibidos na fila de preparação")
-    @GetMapping("/fila-producao")
+    @GetMapping("/fila")
     public ResponseEntity<List<PedidoResponse>> buscarTodosPedidosPorPrioridade(){
         var pedidosOut = buscaPedidosProducaoInputPort.buscarPedidosProducao();
         var listPedidoResponse = pedidoMapper.toPedidoListResponse(pedidosOut);
@@ -63,7 +63,7 @@ public class PedidoController extends ControllerBase{
         var pedidoResponse = pedidoMapper.toPedidoResponse(pedidoOut);
         return ResponseEntity.ok(pedidoResponse);
     }
-*/
+
     @Operation(summary = "Cria um pedido")
     @PostMapping
     public ResponseEntity<PedidoResponse> criarPedido(@Valid @RequestBody PedidoRequest pedidoRequest){
@@ -73,7 +73,6 @@ public class PedidoController extends ControllerBase{
         return ResponseEntity.created(uri).body(pedidoResponse);
     }
 
-/*
     @Operation(summary = "Atualiza status de um  pedido")
     @PatchMapping("/{id}/status")
     public ResponseEntity<PedidoResponse> atualizaStatus(@PathVariable("id") String id,
@@ -83,6 +82,5 @@ public class PedidoController extends ControllerBase{
         var uri = getExpandedCurrentUri("/{id}", pedidoResponse.getId());
         return ResponseEntity.created(uri).body(pedidoResponse);
     }
-*/
 
 }

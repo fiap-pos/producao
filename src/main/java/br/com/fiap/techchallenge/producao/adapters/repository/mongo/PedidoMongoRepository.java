@@ -5,7 +5,10 @@ import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedid
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PedidoMongoRepository extends MongoRepository<Pedido, String> {
     List<Pedido> findAllByStatusIn(List<StatusPedidoEnum> status);
+
+    Optional<Pedido> findByCodigo(Long codigo);
 }

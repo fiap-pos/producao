@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class CoreInjectionConfig {
 
     @Bean
-    CriaPedidoInputPort criarPedido(CriaPedidoOutputPort criaPedidoOutputPort) {
-        return new CriaPedidoUseCase(criaPedidoOutputPort);
+    CriaPedidoInputPort criarPedido(CriaPedidoOutputPort criaPedidoOutputPort, BuscarPedidoOutputPort buscarPedidoOutputPort) {
+        return new CriaPedidoUseCase(criaPedidoOutputPort, buscarPedidoOutputPort);
     }
 
     @Bean
@@ -21,8 +21,8 @@ public class CoreInjectionConfig {
     }
 
     @Bean
-    BuscarPedidoPorIdInputPort buscarPedidoPorId(BuscarPedidoPorIdOutputPort buscarPedidoPorIdOutputPort){
-        return new BuscarPedidoUseCase(buscarPedidoPorIdOutputPort);
+    BuscarPedidoPorIdInputPort buscarPedidoPorId(BuscarPedidoOutputPort buscarPedidoOutputPort){
+        return new BuscarPedidoUseCase(buscarPedidoOutputPort);
     }
     @Bean
     BuscaTodosPedidosInputPort buscarTodosPedidos(BuscaPedidosOutputPort buscaPedidosOutputPort) {
