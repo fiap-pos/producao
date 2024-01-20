@@ -39,11 +39,6 @@ spec:
                 secretKeyRef:
                   name: producao-secrets-aws
                   key: mongoDatabase
-            - name: AUTH_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: producao-secrets-aws
-                  key: authSecret
           volumeMounts:
             - name: producao-volume
               mountPath: /mnt/producao-volume
