@@ -17,7 +17,26 @@ services:
       SERVER_PORT: 8083
       MONGODB_DATABASE: tech_challenge_producao
       MONGODB_URI: mongodb://root:root@mongo:27017
+      AWS_ACCESS_KEY: admin
+      AWS_SECRET_KEY: admin
+      AWS_ENDPOINT: http://localstack:4566
+      SPRING_PROFILES_ACTIVE: local
     ports:
       - "8083:8083"
     depends_on:
       - mongo
+      - localstack
+  localstack:
+    container_name: tech-challenge-producao-localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    networks:
+      - tech_challenge_app_network
+    environment:
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: admin
+      AWS_REGION: us-east-1
+    volumes:
+      - './docker/localstack/setup-queues.sh:/etc/localstack/init/ready.d/init-sqs.sh'

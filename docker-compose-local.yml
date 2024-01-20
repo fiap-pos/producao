@@ -8,3 +8,15 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - "27018:27017"
+  localstack:
+    container_name: tech-challenge-producao-localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: admin
+      AWS_REGION: us-east-1
+    volumes:
+      - './docker/localstack/setup-queues.sh:/etc/localstack/init/ready.d/init-sqs.sh'

@@ -8,10 +8,10 @@ import java.util.List;
 public class PedidoResponse {
     private String id;
     private Long codigo;
-    private  String clienteNome;
-    private  List<ItemPedidoResponse> itens;
-    private  StatusPedidoEnum status;
-    private  BigDecimal valorTotal;
+    private String clienteNome;
+    private List<ItemPedidoResponse> itens;
+    private StatusPedidoEnum status;
+    private BigDecimal valorTotal;
     private LocalDateTime data;
 
     public PedidoResponse(String id, Long codigo, String clienteNome, List<ItemPedidoResponse> itens, StatusPedidoEnum status, LocalDateTime data) {

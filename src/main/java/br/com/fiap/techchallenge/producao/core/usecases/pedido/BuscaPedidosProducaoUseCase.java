@@ -18,7 +18,8 @@ public class BuscaPedidosProducaoUseCase implements BuscaPedidosProducaoInputPor
 
     @Override
     public List<PedidoDTO> buscarPedidosProducao() {
-        return ordenaPedidosPorPrioridade(buscaPedidosOutputPort.buscarTodos());
+        var statusList = List.of(StatusPedidoEnum.RECEBIDO, StatusPedidoEnum.EM_PREPARACAO, StatusPedidoEnum.PRONTO);
+        return ordenaPedidosPorPrioridade(buscaPedidosOutputPort.buscarPedidosPorStatus(statusList));
     }
 
     private static List<PedidoDTO> ordenaPedidosPorPrioridade(List<PedidoDTO> pedidos) {

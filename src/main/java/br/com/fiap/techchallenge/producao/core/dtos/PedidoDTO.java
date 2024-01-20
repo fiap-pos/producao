@@ -2,6 +2,8 @@ package br.com.fiap.techchallenge.producao.core.dtos;
 
 import br.com.fiap.techchallenge.producao.core.domain.entities.Pedido;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public record PedidoDTO(
         StatusPedidoEnum status,
         LocalDateTime dataCriacao
 ) {
+
+    @JsonIgnore
     public String getNomeCliente() {
         return cliente != null ? cliente.nome() : null;
     }
