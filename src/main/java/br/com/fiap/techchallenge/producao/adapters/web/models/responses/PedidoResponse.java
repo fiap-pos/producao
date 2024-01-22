@@ -16,6 +16,7 @@ public class PedidoResponse {
 
     public PedidoResponse(String id, Long codigo, String clienteNome, List<ItemPedidoResponse> itens, StatusPedidoEnum status, LocalDateTime data) {
         this.id = id;
+        this.codigo = codigo;
         this.clienteNome = clienteNome;
         this.itens = itens;
         this.status = status;
