@@ -1,32 +1,30 @@
 package br.com.fiap.techchallenge.producao.adapters.web.models.responses;
 
-import java.math.BigDecimal;
-
 public class ItemPedidoResponse {
-    private String produtoNome;
-    private String produtoDescricao;
+    private String nome;
+    private String descricao;
     private Integer quantidade;
 
-    public ItemPedidoResponse(String produtoNome, String produtoDescricao, Integer quantidade) {
-        this.produtoNome = produtoNome;
-        this.produtoDescricao = produtoDescricao;
+    public ItemPedidoResponse(String nome, String descricao, Integer quantidade) {
+        this.nome = nome;
+        this.descricao = descricao;
         this.quantidade = quantidade;
     }
 
-    public String getProdutoNome() {
-        return produtoNome;
+    public String getNome() {
+        return nome;
     }
 
-    public void setProdutoNome(String produtoNome) {
-        this.produtoNome = produtoNome;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getProdutoDescricao() {
-        return produtoDescricao;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setProdutoDescricao(String produtoDescricao) {
-        this.produtoDescricao = produtoDescricao;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public Integer getQuantidade() {
