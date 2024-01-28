@@ -55,6 +55,8 @@ class PedidoControllerTest {
 
     @Mock
     BuscarPedidoPorIdInputPort buscarPedidoPorIdInputPort;
+    
+    @Mock
     PedidoMapper pedidoMapper;
 
     AutoCloseable mock;
@@ -113,7 +115,7 @@ class PedidoControllerTest {
         }
 
         @Test
-        void buscarTodosPedidosPorPrioridade() throws Exception {
+        void buscaPedidosParaSeremExibidosNaFilaDePreparacao() throws Exception {
             var pedidoDTO = getPedidoDTO();
 
             when(buscaPedidosProducaoInputPort.buscarPedidosProducao()).thenReturn(Collections.singletonList(pedidoDTO));

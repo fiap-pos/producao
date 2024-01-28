@@ -1,17 +1,12 @@
 package br.com.fiap.techchallenge.producao.adapters.repository;
 
 import br.com.fiap.techchallenge.producao.adapters.repository.mappers.PedidoMapper;
-import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.mongo.PedidoMongoRepository;
 import br.com.fiap.techchallenge.producao.adapters.repository.sqs.PedidoSqsPublisher;
-import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
-import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -20,10 +15,8 @@ import java.util.Optional;
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getListaPedido;
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getListaStatusPedido;
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedido;
-import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedidoDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -34,6 +27,7 @@ import static org.mockito.Mockito.when;
 class PedidoRepositoryTest {
     @InjectMocks
     PedidoRepository pedidoRepository;
+
     @Mock
     PedidoMongoRepository pedidoMongoRepository;
 
