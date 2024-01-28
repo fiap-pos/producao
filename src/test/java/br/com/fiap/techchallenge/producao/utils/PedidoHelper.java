@@ -10,6 +10,7 @@ import br.com.fiap.techchallenge.producao.core.dtos.ItemPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static br.com.fiap.techchallenge.producao.utils.ClienteHelper.getCliente;
@@ -38,9 +39,16 @@ public abstract class PedidoHelper {
         var itens = List.of(getItemPedido());
         return new Pedido( PEDIDO_ID,CODIGO, getCliente(), itens, PEDIDO_STATUS, DATA_CRIACAO);
     }
-
     public static List<Pedido> getListaPedido() {
         return List.of(getPedido());
+    }
+
+    public static CriaPedidoDTO getCriaPedidoDTO() {
+        return new CriaPedidoDTO(1L, CLIENTE_NOME.nome(), ITENS);
+    }
+
+    public static CriaPedidoDTO getCriaPedidoDTOSemCliente() {
+        return new CriaPedidoDTO(1L, null, ITENS);
     }
 
     public static ItemPedidoDTO getItemPedidoDTO() {

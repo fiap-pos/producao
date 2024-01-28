@@ -55,16 +55,7 @@ class PedidoControllerTest {
 
     @Mock
     BuscarPedidoPorIdInputPort buscarPedidoPorIdInputPort;
-
-//    @Mock
-//    BuscaTodosPedidosInputPort buscaTodosPedidosInputPort;
-
-//    @Mock
-//    BuscaCobrancaPorPedidoIdInputPort buscaCobrancaPorPedidoIdInputPort;
-
     PedidoMapper pedidoMapper;
-
-//    CobrancaMapper cobrancaMapper;
 
     AutoCloseable mock;
 
@@ -76,16 +67,14 @@ class PedidoControllerTest {
 
     @BeforeEach
     void setUp() {
-//        itemPedidoRequest.setProdutoId(1L);
         itemPedidoRequest.setQuantidade(10);
-
-//        pedidoRequest.setClienteId(1L);
-//        pedidoRequest.setItens(Collections.singletonList(itemPedidoRequest));
+        pedidoRequest.setCodigo(1L);
+        pedidoRequest.setClienteNome("Cliente Nome");
+        pedidoRequest.setItens(Collections.singletonList(itemPedidoRequest));
 
         atualizaStatusPedidoRequest.setStatus(StatusPedidoEnum.FINALIZADO);
 
         this.pedidoMapper = new PedidoMapper();
-//        this.cobrancaMapper = new CobrancaMapper();
         mock = MockitoAnnotations.openMocks(this);
         PedidoController pedidoController = new PedidoController(
                 criaPedidoInputPort,
@@ -113,7 +102,7 @@ class PedidoControllerTest {
 
             when(buscaTodosPedidosInputPort.buscarTodos()).thenReturn(Collections.singletonList(pedidoDTO));
 
-            ResultActions result = mockMvc.perform(get("/pedidos")
+            ResultActions result = mockMvc.perform(get("/producao")
                     .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -124,12 +113,12 @@ class PedidoControllerTest {
         }
 
         @Test
-        void buscaPedidosParaSeremExibidosNaFilaDePreparacao() throws Exception {
+        void buscarTodosPedidosPorPrioridade() throws Exception {
             var pedidoDTO = getPedidoDTO();
 
             when(buscaPedidosProducaoInputPort.buscarPedidosProducao()).thenReturn(Collections.singletonList(pedidoDTO));
 
-            ResultActions result = mockMvc.perform(get("/pedidos/fila-producao")
+            ResultActions result = mockMvc.perform(get("/producao/fila")
                     .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -146,7 +135,7 @@ class PedidoControllerTest {
 
             when(buscarPedidoPorIdInputPort.buscarPorId(anyString())).thenReturn(pedidoDTO);
 
-            ResultActions result = mockMvc.perform(get("/pedidos/{id}", id)
+            ResultActions result = mockMvc.perform(get("/producao/{id}", id)
                     .contentType(MediaType.APPLICATION_JSON)
             );
 
@@ -162,7 +151,7 @@ class PedidoControllerTest {
 
             when(criaPedidoInputPort.criar(any(CriaPedidoDTO.class))).thenReturn(pedidoDTO);
 
-            ResultActions result = mockMvc.perform(post("/pedidos")
+            ResultActions result = mockMvc.perform(post("/producao")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(pedidoRequest))
             );
@@ -180,12 +169,12 @@ class PedidoControllerTest {
 
             when(atualizaStatusPedidoInputPort.atualizarStatus(anyString(), any(AtualizaStatusPedidoDTO.class))).thenReturn(pedidoDTO);
 
-            ResultActions result = mockMvc.perform(patch("/pedidos/{id}/status", id, atualizaStatusPedidoRequest)
+            ResultActions result = mockMvc.perform(patch("/producao/{id}/status", id, atualizaStatusPedidoRequest)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(atualizaStatusPedidoRequest))
             );
 
-            result.andExpect(status().isAccepted());
+            result.andExpect(status().isCreated());
 
             verify(atualizaStatusPedidoInputPort, times(1)).atualizarStatus(anyString(), any(AtualizaStatusPedidoDTO.class));
             verifyNoMoreInteractions(atualizaStatusPedidoInputPort);
@@ -198,7 +187,7 @@ class PedidoControllerTest {
 //
 //            when(buscaTodosPedidosInputPort.buscarTodos(any(StatusPedidoEnum.class))).thenReturn(Collections.singletonList(pedidoDTO));
 //
-//            ResultActions result = mockMvc.perform(get("/pedidos/status/{status}", status)
+//            ResultActions result = mockMvc.perform(get("/producao/status/{status}", status)
 //                    .contentType(MediaType.APPLICATION_JSON)
 //            );
 //
@@ -215,7 +204,7 @@ class PedidoControllerTest {
 //
 //            when(buscaCobrancaPorPedidoIdInputPort.buscarPorPedidoId(any(Long.class))).thenReturn(cobrancaDTO);
 //
-//            ResultActions result = mockMvc.perform(get("/pedidos/{id}/cobranca", id)
+//            ResultActions result = mockMvc.perform(get("/producao/{id}/cobranca", id)
 //                    .contentType(MediaType.APPLICATION_JSON)
 //            );
 //

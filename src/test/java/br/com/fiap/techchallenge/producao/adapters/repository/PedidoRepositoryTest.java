@@ -40,6 +40,7 @@ class PedidoRepositoryTest {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
+        var pedidoRepository = new PedidoRepository(pedidoMongoRepository, pedidoMapper, pedidoSqsPublisher);
     }
 
     @AfterEach

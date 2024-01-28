@@ -48,4 +48,16 @@ public class PedidoRequest{
                 mapItens()
         );
     }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setClienteNome(String clienteNome) {
+        this.clienteNome = clienteNome;
+    }
+
+    public void setItens(List<ItemPedidoRequest> itens) {
+        this.itens = itens;
+    }
 }
