@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17.0.7_7-jre-focal@sha256:901eeb64e3d1e74d261e82e4158386407b95628eaf723058fb96d4efb9141b88
 RUN mkdir /app
 RUN apt-get update && apt-get install -y dumb-init
-COPY --from=build /app/target/producao-*.jar /app/java-application.jar
+COPY --from=build /app/target/producao-*.jar /app/java-application.jary
 WORKDIR /app
 RUN addgroup --system producao-app && useradd -r producao-app -g producao-app
 RUN chown -R producao-app:producao-app /app
