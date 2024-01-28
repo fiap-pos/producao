@@ -11,15 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getListaPedidoDTO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 class BuscaPedidosProducaoUseCaseTest {
@@ -44,24 +40,13 @@ class BuscaPedidosProducaoUseCaseTest {
 
     @Nested
     class buscaPedidosPorPrioridadeUseCase {
-        @Test
-        void testBuscarPedidosProducaoListaVazia() {
-            when(buscaTodosPedidosOutputPort.buscarPedidosPorStatus(anyList()))
-                    .thenReturn(new ArrayList<>());
-
-            var actualBuscarPedidosProducaoResult = buscaPedidosProducaoInputPort.buscarPedidosProducao();
-
-            verify(buscaTodosPedidosOutputPort).buscarPedidosPorStatus(anyList());
-            assertTrue(actualBuscarPedidosProducaoResult.isEmpty());
-        }
 
         @Test
-        void testBuscarPedidosProducaoListaComPedidos() {
+        void buscaPedidoPorPrioridade() {
             var pedidosDTO = getListaPedidoDTO();
-            when(buscaTodosPedidosOutputPort.buscarPedidosPorStatus(anyList()))
-                    .thenReturn(pedidosDTO);
+            when(buscaTodosPedidosOutputPort.buscarTodos()).thenReturn(pedidosDTO);
 
-            var listaPedidosBuscados = buscaPedidosProducaoInputPort.buscarPedidosProducao();
+            var listaPedidosBuscados = buscaTodosPedidosOutputPort.buscarTodos();
 
             assertThat(listaPedidosBuscados).isNotNull();
             assertThat(listaPedidosBuscados).allSatisfy( pedidoBuscado -> {
@@ -74,9 +59,10 @@ class BuscaPedidosProducaoUseCaseTest {
                 assertThat(pedidoBuscado.status()).isEqualTo(pedidosDTO.get(0).status());
                 assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidosDTO.get(0).dataCriacao());
             });
-            assertEquals(1, listaPedidosBuscados.size());
 
-            verify(buscaTodosPedidosOutputPort, times(1)).buscarPedidosPorStatus(anyList());
+            verify(buscaTodosPedidosOutputPort, times(1)).buscarTodos();
+            verifyNoMoreInteractions(buscaTodosPedidosOutputPort);
         }
     }
+
 }

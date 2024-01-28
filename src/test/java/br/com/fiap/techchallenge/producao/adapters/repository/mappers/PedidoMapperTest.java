@@ -7,7 +7,6 @@ import br.com.fiap.techchallenge.producao.adapters.repository.models.ItemPedido;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedido;
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedidoDTO;
@@ -21,7 +20,6 @@ class PedidoMapperTest {
 
     @BeforeEach
     void setUp() {
-        mock = MockitoAnnotations.openMocks(this);
         this.pedidoMapper = new PedidoMapper();
     }
 
@@ -37,6 +35,7 @@ class PedidoMapperTest {
         var pedido = pedidoMapper.toPedido(pedidoDTO);
 
         assertThat(pedido).isNotNull().isInstanceOf(Pedido.class);
+        assertThat(pedido.getId()).isEqualTo(pedidoDTO.id());
         assertThat(pedido.getCodigo()).isEqualTo(pedidoDTO.codigo());
         assertThat(pedido.getCliente().getNome()).isEqualTo(pedidoDTO.cliente().nome());
         assertThat(pedido.getStatus()).isEqualTo(pedidoDTO.status());
