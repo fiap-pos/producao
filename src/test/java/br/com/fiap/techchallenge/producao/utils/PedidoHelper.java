@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.producao.utils;
 
 import br.com.fiap.techchallenge.producao.adapters.repository.models.ItemPedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
+import br.com.fiap.techchallenge.producao.adapters.web.models.requests.ItemPedidoRequest;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.dtos.AtualizaStatusPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.ClienteDTO;
@@ -57,6 +58,10 @@ public abstract class PedidoHelper {
 
     public static ItemPedido getItemPedido() {
         return new ItemPedido(PRODUTO_NOME,PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
+    }
+
+    public static ItemPedidoRequest getItemPedidoRequest(){
+        return new ItemPedidoRequest(PRODUTO_NOME, PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
     }
 
     public static AtualizaStatusPedidoDTO getAtualizaStatusPedidoDTO(StatusPedidoEnum status) {

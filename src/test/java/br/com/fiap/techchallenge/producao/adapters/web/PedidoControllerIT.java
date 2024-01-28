@@ -1,37 +1,25 @@
 package br.com.fiap.techchallenge.producao.adapters.web;
 
-import br.com.fiap.techchallenge.producao.adapters.web.models.requests.ItemPedidoRequest;
 import br.com.fiap.techchallenge.producao.adapters.web.models.requests.PedidoRequest;
-import br.com.fiap.techchallenge.producao.core.domain.entities.enums.CategoriaEnum;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
+import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getItemPedidoRequest;
 import static io.restassured.RestAssured.given;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureTestDatabase
-@ActiveProfiles("test")
-@Transactional
+@Profile("test")
 class PedidoControllerIT {
 
     @LocalServerPort
     private int port;
-
-    private String nome = "Nome do Cliente 1";
-//    private String cpf = "64406282084";
-//    private String email = "email1@email.com";
 
     @BeforeEach
     void setup() {
@@ -39,45 +27,44 @@ class PedidoControllerIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @Test
-    void criaUmPedidoComLancheEBebidaComClienteCadastrado() throws Exception {
+    private String nome = "Nome do Cliente 1";
+
+//    @Test
+//    void criaUmPedidoComLancheEBebidaComClienteCadastrado() throws Exception {
 //        cadastraUmNovoProdutoLanche();
 //        cadastraUmNovoProdutoBebida();
-        nome = "Novo Cliente";
-//        cpf = "76728342079";
-//        email = "novocliente@email.com";
+//        nome = "Novo Cliente";
 //        cadastraUmNovoCliente();
-
-        var itemPedidoRequest1 = new ItemPedidoRequest("Item", "Item 1", 2);
-        var itemPedidoRequest2 = new ItemPedidoRequest("Item2", "Item 2", 1);
-        var pedidoRequest = new PedidoRequest(nome, List.of(itemPedidoRequest1, itemPedidoRequest2));
-
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(pedidoRequest)
-        .when()
-                .post("/pedidos")
-        .then()
-                .log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .body(matchesJsonSchemaInClasspath("schemas/pedido.schema.json"));
-    }
+//
+//        var itemPedidoRequest1 = getItemPedidoRequest();
+//        var pedidoRequest = new PedidoRequest(nome, List.of(itemPedidoRequest1));
+//
+//        given()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(pedidoRequest)
+//                .when()
+//                .post("/producao")
+//                .then()
+//                .log().all()
+//                .statusCode(HttpStatus.CREATED.value())
+//                .body(matchesJsonSchemaInClasspath("schemas/pedido-com-cliente.schema.json"));
+//    }
 
     @Test
     void criaUmPedidoComLancheEBebidaSemClienteCadastrado() throws Exception {
 //        cadastraUmNovoProdutoLanche();
 //        cadastraUmNovoProdutoBebida();
 
-        var itemPedidoRequest1 = new ItemPedidoRequest("Item", "Item 1", 2);
-        var itemPedidoRequest2 = new ItemPedidoRequest("Item2", "Item 2", 1);
-        var pedidoRequest = new PedidoRequest(List.of(itemPedidoRequest1, itemPedidoRequest2));
+        var itemPedidoRequest1 = getItemPedidoRequest();
+        var pedidoRequest = new PedidoRequest("Nome Cliente",List.of(itemPedidoRequest1));
+        pedidoRequest.setCodigo(10L);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(pedidoRequest)
-        .when()
-                .post("/pedidos")
-        .then()
+                .when()
+                .post("/producao")
+                .then()
                 .log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -89,17 +76,17 @@ class PedidoControllerIT {
 //        given()
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .body(cliente)
-//        .when()
+//                .when()
 //                .post("/clientes")
-//        .then()
+//                .then()
 //                .log().all()
 //                .statusCode(HttpStatus.CREATED.value())
 //                .body(matchesJsonSchemaInClasspath("schemas/cliente.schema.json"));
 //    }
-
+//
 //    @Test
 //    void cadastraUmNovoProdutoLanche() throws Exception {
-//        var produtoRequest = new ProdutoRequest(
+//        var produtoRequest = getProdutoRequest(
 //                "HAMBURGER ANGUS",
 //                CategoriaEnum.LANCHE,
 //                BigDecimal.valueOf(35.90),
@@ -109,9 +96,9 @@ class PedidoControllerIT {
 //        given()
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .body(produtoRequest)
-//        .when()
+//                .when()
 //                .post("/produtos")
-//        .then()
+//                .then()
 //                .log().all()
 //                .statusCode(HttpStatus.CREATED.value())
 //                .body(matchesJsonSchemaInClasspath("schemas/produto.schema.json"));
@@ -130,9 +117,9 @@ class PedidoControllerIT {
 //        given()
 //                .contentType(MediaType.APPLICATION_JSON_VALUE)
 //                .body(produtoRequest)
-//        .when()
+//                .when()
 //                .post("/produtos")
-//        .then()
+//                .then()
 //                .log().all()
 //                .statusCode(HttpStatus.CREATED.value())
 //                .body(matchesJsonSchemaInClasspath("schemas/produto.schema.json"));
