@@ -138,4 +138,8 @@ class PedidoControllerIT {
 //                .body(matchesJsonSchemaInClasspath("schemas/produto.schema.json"));
 //
 //    }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bc91fd6 (Adiciona testes)
