@@ -40,9 +40,8 @@ public class CriaPedidoUseCase implements CriaPedidoInputPort {
     private void verificaPedidoExiste(CriaPedidoDTO pedidoIn) {
         try {
             buscarPedidoOutputPort.buscarPorCodigo(pedidoIn.codigo());
-            throw new BadRequestException("Já existe um pedido com o código informado");
+//            throw new BadRequestException("Já existe um pedido com o código informado");
         } catch(EntityNotFoundException ignored) {
-
         }
     }
 

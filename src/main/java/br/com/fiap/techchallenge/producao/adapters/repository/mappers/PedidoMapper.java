@@ -23,7 +23,7 @@ public class PedidoMapper {
         var itens = mapItens(pedidoIn.itens());
 
         return new Pedido(
-          pedidoIn.codigo(),
+            pedidoIn.codigo(),
             cliente,
             itens,
             pedidoIn.status(),

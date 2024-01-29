@@ -29,6 +29,15 @@ public class Pedido {
         this.data = data;
     }
 
+    public Pedido(String id, Long codigo, Cliente cliente, List<ItemPedido> itens, StatusPedidoEnum status, LocalDateTime data) {
+        this.id = id;
+        this.codigo = codigo;
+        this.cliente = cliente;
+        this.itens = itens;
+        this.status = status;
+        this.data = data;
+    }
+
     public String getId() {
         return id;
     }
