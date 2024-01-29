@@ -2,6 +2,9 @@ package br.com.fiap.techchallenge.producao.utils;
 
 import br.com.fiap.techchallenge.producao.adapters.repository.models.ItemPedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
+import br.com.fiap.techchallenge.producao.adapters.web.models.requests.ItemPedidoRequest;
+import br.com.fiap.techchallenge.producao.adapters.web.models.responses.ItemPedidoResponse;
+import br.com.fiap.techchallenge.producao.adapters.web.models.responses.PedidoResponse;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.dtos.AtualizaStatusPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.ClienteDTO;
@@ -39,6 +42,9 @@ public abstract class PedidoHelper {
         return new Pedido( PEDIDO_ID,CODIGO, getCliente(), itens, PEDIDO_STATUS, DATA_CRIACAO);
     }
 
+    public static PedidoResponse getPedidoResponse(){
+        return new PedidoResponse(PEDIDO_ID, CODIGO, CLIENTE_NOME.nome(), List.of(getItemPedidoResponse()), PEDIDO_STATUS, DATA_CRIACAO);
+    }
     public static List<Pedido> getListaPedido() {
         return List.of(getPedido());
     }
@@ -49,6 +55,9 @@ public abstract class PedidoHelper {
 
     public static ItemPedido getItemPedido() {
         return new ItemPedido(PRODUTO_NOME,PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
+    }
+    public static ItemPedidoResponse getItemPedidoResponse() {
+        return new ItemPedidoResponse(PRODUTO_NOME,PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
     }
 
     public static AtualizaStatusPedidoDTO getAtualizaStatusPedidoDTO(StatusPedidoEnum status) {
