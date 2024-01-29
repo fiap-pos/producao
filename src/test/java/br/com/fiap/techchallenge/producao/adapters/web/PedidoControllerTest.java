@@ -7,6 +7,7 @@ import br.com.fiap.techchallenge.producao.adapters.web.models.requests.PedidoReq
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.dtos.AtualizaStatusPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.CriaPedidoDTO;
+import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 import br.com.fiap.techchallenge.producao.core.ports.in.pedido.AtualizaStatusPedidoInputPort;
 import br.com.fiap.techchallenge.producao.core.ports.in.pedido.BuscaPedidosProducaoInputPort;
 import br.com.fiap.techchallenge.producao.core.ports.in.pedido.BuscaTodosPedidosInputPort;
@@ -27,6 +28,7 @@ import java.util.Collections;
 
 import static br.com.fiap.techchallenge.producao.utils.JsonToStringHelper.asJsonString;
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedidoDTO;
+import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getPedidoResponse;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
@@ -55,7 +57,7 @@ class PedidoControllerTest {
 
     @Mock
     BuscarPedidoPorIdInputPort buscarPedidoPorIdInputPort;
-    
+
     @Mock
     PedidoMapper pedidoMapper;
 
@@ -146,12 +148,12 @@ class PedidoControllerTest {
             verify(buscarPedidoPorIdInputPort, times(1)).buscarPorId(anyString());
             verifyNoMoreInteractions(buscarPedidoPorIdInputPort);
         }
-
         @Test
         void criaUmPedido() throws Exception {
             var pedidoDTO = getPedidoDTO();
-
+            var pedidoResponse = getPedidoResponse();
             when(criaPedidoInputPort.criar(any(CriaPedidoDTO.class))).thenReturn(pedidoDTO);
+            when(pedidoMapper.toPedidoResponse(any(PedidoDTO.class))).thenReturn(pedidoResponse);
 
             ResultActions result = mockMvc.perform(post("/producao")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -168,8 +170,10 @@ class PedidoControllerTest {
         void atualizaStatusDoPedido() throws Exception {
             var pedidoDTO = getPedidoDTO();
             var id = 1L;
-
-            when(atualizaStatusPedidoInputPort.atualizarStatus(anyString(), any(AtualizaStatusPedidoDTO.class))).thenReturn(pedidoDTO);
+            var pedidoResponse = getPedidoResponse();
+            when(pedidoMapper.toPedidoResponse(any(PedidoDTO.class))).thenReturn(pedidoResponse);
+            when(atualizaStatusPedidoInputPort.atualizarStatus(anyString(), any(AtualizaStatusPedidoDTO.class)))
+                    .thenReturn(pedidoDTO);
 
             ResultActions result = mockMvc.perform(patch("/producao/{id}/status", id, atualizaStatusPedidoRequest)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -181,39 +185,5 @@ class PedidoControllerTest {
             verify(atualizaStatusPedidoInputPort, times(1)).atualizarStatus(anyString(), any(AtualizaStatusPedidoDTO.class));
             verifyNoMoreInteractions(atualizaStatusPedidoInputPort);
         }
-
-//        @Test
-//        void buscarTodosPedidosPorStatus() throws Exception {
-//            var status = "PENDENTE_DE_PAGAMENTO";
-//            var pedidoDTO = getPedidoDTO();
-//
-//            when(buscaTodosPedidosInputPort.buscarTodos(any(StatusPedidoEnum.class))).thenReturn(Collections.singletonList(pedidoDTO));
-//
-//            ResultActions result = mockMvc.perform(get("/producao/status/{status}", status)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//            );
-//
-//            result.andExpect(status().isOk());
-//
-//            verify(buscaTodosPedidosInputPort, times(1)).buscarTodosStatus(any(StatusPedidoEnum.class));
-//            verifyNoMoreInteractions(buscaTodosPedidosInputPort);
-//        }
-//
-//        @Test
-//        void buscarCobrancaPorPedidoId() throws Exception {
-//            var id = 1L;
-//            var cobrancaDTO = getCobrancaDTO();
-//
-//            when(buscaCobrancaPorPedidoIdInputPort.buscarPorPedidoId(any(Long.class))).thenReturn(cobrancaDTO);
-//
-//            ResultActions result = mockMvc.perform(get("/producao/{id}/cobranca", id)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//            );
-//
-//            result.andExpect(status().isOk());
-//
-//            verify(buscaCobrancaPorPedidoIdInputPort, times(1)).buscarPorPedidoId(any(Long.class));
-//            verifyNoMoreInteractions(buscaCobrancaPorPedidoIdInputPort);
-//        }
     }
 }
