@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
@@ -30,8 +31,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-
 class PedidoRepositoryTest {
+    @InjectMocks
+    PedidoRepository pedidoRepository;
+
     @Mock
     PedidoMongoRepository pedidoMongoRepository;
 
@@ -46,6 +49,7 @@ class PedidoRepositoryTest {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
+        var pedidoRepository = new PedidoRepository(pedidoMongoRepository, pedidoMapper, pedidoSqsPublisher);
     }
 
     @AfterEach
@@ -56,21 +60,24 @@ class PedidoRepositoryTest {
     @Test
     void buscarTodos() {
         var pedidos = getListaPedido();
+        var pedidoDTO = getPedidoDTO();
         when(pedidoMongoRepository.findAll()).thenReturn(pedidos);
 
-        var pedidosBuscados = pedidoMongoRepository.findAll();
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
+
+        var pedidosBuscados = pedidoRepository.buscarTodos();
 
         assertThat(pedidosBuscados).isNotNull();
         assertThat(pedidosBuscados).allSatisfy( pedidoBuscado -> {
-            assertThat(pedidoBuscado.getId()).isEqualTo(pedidos.get(0).getId());
-            assertThat(pedidoBuscado.getCodigo()).isEqualTo(pedidos.get(0).getCodigo());
-            assertThat(pedidoBuscado.getItens()).allSatisfy( item -> {
-                assertThat(item.getNome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
-                assertThat(item.getDescricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
-                assertThat(item.getQuantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
+            assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
+            assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
+            assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
+                assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
+                assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
             });
-            assertThat(pedidoBuscado.getStatus()).isEqualTo(pedidos.get(0).getStatus());
-            assertThat(pedidoBuscado.getData()).isEqualTo(pedidos.get(0).getData());
+            assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
+            assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
         });
 
         verify(pedidoMongoRepository, times(1)).findAll();
@@ -82,21 +89,24 @@ class PedidoRepositoryTest {
     void buscarPedidosPorStatus() {
         var pedidos = getListaPedido();
         var listaStatus = getListaStatusPedido();
-        when(pedidoMongoRepository.findAllByStatusIn(anyList())).thenReturn(pedidos);
+        var pedidoDTO = getPedidoDTO();
 
-        var pedidosBuscados = pedidoMongoRepository.findAllByStatusIn(listaStatus);
+        when(pedidoMongoRepository.findAllByStatusIn(anyList())).thenReturn(pedidos);
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
+
+        var pedidosBuscados = pedidoRepository.buscarPedidosPorStatus(listaStatus);
 
         assertThat(pedidosBuscados).isNotNull();
         assertThat(pedidosBuscados).allSatisfy( pedidoBuscado -> {
-            assertThat(pedidoBuscado.getId()).isEqualTo(pedidos.get(0).getId());
-            assertThat(pedidoBuscado.getCodigo()).isEqualTo(pedidos.get(0).getCodigo());
-            assertThat(pedidoBuscado.getItens()).allSatisfy( item -> {
-                assertThat(item.getNome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
-                assertThat(item.getDescricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
-                assertThat(item.getQuantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
+            assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
+            assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
+            assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
+                assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
+                assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
             });
-            assertThat(pedidoBuscado.getStatus()).isEqualTo(pedidos.get(0).getStatus());
-            assertThat(pedidoBuscado.getData()).isEqualTo(pedidos.get(0).getData());
+            assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
+            assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
         });
 
         verify(pedidoMongoRepository, times(1)).findAllByStatusIn(anyList());
@@ -106,32 +116,41 @@ class PedidoRepositoryTest {
     @Test
     void criar() {
         var pedido = getPedido();
-        when(pedidoMongoRepository.save(pedido)).thenReturn(pedido);
+        var pedidoDTO = getPedidoDTO();
 
-        var pedidoSalvo = pedidoMongoRepository.save(pedido);
+        when(pedidoMapper.toPedido(any(PedidoDTO.class))).thenReturn(pedido);
+        when(pedidoMongoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
+
+
+        var pedidoSalvo = pedidoRepository.criar(pedidoDTO);
         verify(pedidoMongoRepository, times(1)).save(pedido);
 
-        assertThat(pedidoSalvo).isNotNull().isEqualTo(pedido);
-        assertThat(pedidoSalvo.getId()).isEqualTo(pedido.getId());
-        assertThat(pedidoSalvo.getStatus()).isEqualTo(pedido.getStatus());
-        assertThat(pedidoSalvo.getCliente()).isEqualTo(pedido.getCliente());
-        assertThat(pedidoSalvo.getItens()).isEqualTo(pedido.getItens());
+        assertThat(pedidoSalvo).isNotNull().isEqualTo(pedidoDTO);
+        assertThat(pedidoSalvo.id()).isEqualTo(pedidoDTO.id());
+        assertThat(pedidoSalvo.status()).isEqualTo(pedidoDTO.status());
+        assertThat(pedidoSalvo.cliente()).isEqualTo(pedidoDTO.cliente());
+        assertThat(pedidoSalvo.codigo()).isEqualTo(pedidoDTO.codigo());
+        assertThat(pedidoSalvo.itens()).isEqualTo(pedidoDTO.itens());
+
+        verifyNoMoreInteractions(pedidoMongoRepository);
     }
     @Test
     void buscarPorId() {
         var pedido = getPedido();
+        var pedidoDTO = getPedidoDTO();
         when(pedidoMongoRepository.findById(anyString())).thenReturn(Optional.of(pedido));
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
 
-        var pedidoOptional = pedidoMongoRepository.findById(pedido.getId());
+        var pedidoBuscado = pedidoRepository.buscarPorId(pedido.getId());
         verify(pedidoMongoRepository, times(1)).findById(pedido.getId());
 
-        assertThat(pedidoOptional).isPresent().containsSame(pedido);
+        assertThat(pedidoBuscado).isNotNull().isEqualTo(pedidoDTO);
 
-        pedidoOptional.ifPresent(pedidoSalva -> {
-            assertThat(pedidoSalva.getId()).isEqualTo(pedido.getId());
-            assertThat(pedidoSalva.getStatus()).isEqualTo(pedido.getStatus());
-            assertThat(pedidoSalva.getStatus()).isEqualTo(pedido.getStatus());
-        });
+        assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
+        assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
+        assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
+        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
     }
 
     @Test
@@ -145,18 +164,20 @@ class PedidoRepositoryTest {
     @Test
     void buscarPorCodigo() {
         var pedido = getPedido();
-        when(pedidoMongoRepository.findByCodigo(anyLong())).thenReturn(Optional.of(pedido));
+        var pedidoDTO = getPedidoDTO();
 
-        var pedidoOptional = pedidoMongoRepository.findByCodigo(pedido.getCodigo());
+        when(pedidoMongoRepository.findByCodigo(anyLong())).thenReturn(Optional.of(pedido));
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
+
+        var pedidoBuscado = pedidoRepository.buscarPorCodigo(pedido.getCodigo());
         verify(pedidoMongoRepository, times(1)).findByCodigo(pedido.getCodigo());
 
-        assertThat(pedidoOptional).isPresent().containsSame(pedido);
+        assertThat(pedidoBuscado).isNotNull().isEqualTo(pedidoDTO);
 
-        pedidoOptional.ifPresent(pedidoSalva -> {
-            assertThat(pedidoSalva.getId()).isEqualTo(pedido.getId());
-            assertThat(pedidoSalva.getStatus()).isEqualTo(pedido.getStatus());
-            assertThat(pedidoSalva.getStatus()).isEqualTo(pedido.getStatus());
-        });
+        assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
+        assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
+        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
+        assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
     }
     @Test
     void buscarPorCodigoInexistente() {
