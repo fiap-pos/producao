@@ -13,6 +13,7 @@ import br.com.fiap.techchallenge.producao.core.dtos.ItemPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static br.com.fiap.techchallenge.producao.utils.ClienteHelper.getCliente;
@@ -49,6 +50,14 @@ public abstract class PedidoHelper {
         return List.of(getPedido());
     }
 
+    public static CriaPedidoDTO getCriaPedidoDTO() {
+        return new CriaPedidoDTO(1L, CLIENTE_NOME.nome(), ITENS);
+    }
+
+    public static CriaPedidoDTO getCriaPedidoDTOSemCliente() {
+        return new CriaPedidoDTO(1L, null, ITENS);
+    }
+
     public static ItemPedidoDTO getItemPedidoDTO() {
         return new ItemPedidoDTO(PRODUTO_NOME,PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
     }
@@ -58,6 +67,10 @@ public abstract class PedidoHelper {
     }
     public static ItemPedidoResponse getItemPedidoResponse() {
         return new ItemPedidoResponse(PRODUTO_NOME,PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
+    }
+
+    public static ItemPedidoRequest getItemPedidoRequest(){
+        return new ItemPedidoRequest(PRODUTO_NOME, PRODUTO_DESCRICAO, PRODUTO_QUANTIDADE);
     }
 
     public static AtualizaStatusPedidoDTO getAtualizaStatusPedidoDTO(StatusPedidoEnum status) {

@@ -52,9 +52,9 @@ class BuscarPedidoUseCaseTest {
             assertThat(pedidoBuscado).isNotNull().isInstanceOf(PedidoDTO.class);
             assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
             assertThat(pedidoBuscado.itens()).allSatisfy(item -> {
-               assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
-               assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
-               assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
+                assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
+                assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
+                assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
             });
             assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
             assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidoDTO.dataCriacao());

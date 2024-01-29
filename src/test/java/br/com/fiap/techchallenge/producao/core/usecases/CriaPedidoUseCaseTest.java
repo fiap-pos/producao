@@ -63,9 +63,9 @@ class CriaPedidoUseCaseTest {
             assertThat(pedidoCriado.id()).isEqualTo(pedidoDTO.id());
             assertThat(pedidoCriado.getNomeCliente()).isEqualTo(pedidoDTO.getNomeCliente());
             assertThat(pedidoCriado.itens()).allSatisfy(item -> {
-               assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
-               assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
-               assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
+                assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
+                assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
+                assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
             });
             assertThat(pedidoCriado.status()).isEqualTo(pedidoDTO.status());
             assertThat(pedidoCriado.dataCriacao()).isEqualTo(pedidoDTO.dataCriacao());

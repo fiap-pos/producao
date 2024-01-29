@@ -58,9 +58,9 @@ class AtualizaStatusPedidoUseCaseTest {
 
             assertThat(pedidoAtualizado).isNotNull();
             assertThat(pedidoAtualizado.itens()).allSatisfy( item -> {
-               assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
-               assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
-               assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
+                assertThat(item.nome()).isEqualTo(pedidoDTO.itens().get(0).nome());
+                assertThat(item.descricao()).isEqualTo(pedidoDTO.itens().get(0).descricao());
+                assertThat(item.quantidade()).isEqualTo(pedidoDTO.itens().get(0).quantidade());
             });
             assertThat(pedidoAtualizado.status()).isEqualTo(pedidoDTO.status());
             assertThat(pedidoAtualizado.dataCriacao()).isEqualTo(pedidoDTO.dataCriacao());
