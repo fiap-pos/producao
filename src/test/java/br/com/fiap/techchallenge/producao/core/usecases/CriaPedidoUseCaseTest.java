@@ -2,7 +2,6 @@ package br.com.fiap.techchallenge.producao.core.usecases;
 
 import br.com.fiap.techchallenge.producao.core.domain.entities.Pedido;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
-import br.com.fiap.techchallenge.producao.core.dtos.ClienteDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 import br.com.fiap.techchallenge.producao.core.ports.in.pedido.CriaPedidoInputPort;
 import br.com.fiap.techchallenge.producao.core.ports.out.pedido.BuscarPedidoOutputPort;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.when;
 class CriaPedidoUseCaseTest {
 
     private CriaPedidoInputPort criaPedidoInputPort;
-
     @Mock
     CriaPedidoOutputPort criaPedidoOutputPort;
     @Mock
@@ -56,10 +54,10 @@ class CriaPedidoUseCaseTest {
         @Test
         void criarPedidoComCliente() {
             var pedidoDTO = getPedidoDTO();
-            var novoPedido = getCriaPedidoDTO();
+            var criaPedidoDTO = getCriaPedidoDTO();
             when(criaPedidoOutputPort.criar(any(PedidoDTO.class))).thenReturn(pedidoDTO);
 
-            var pedidoCriado = criaPedidoInputPort.criar(novoPedido);
+            var pedidoCriado = criaPedidoInputPort.criar(criaPedidoDTO);
 
             assertThat(pedidoCriado).isNotNull();
             assertThat(pedidoCriado.id()).isEqualTo(pedidoDTO.id());

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
@@ -174,10 +175,10 @@ class PedidoRepositoryTest {
     }
     @Test
     void buscarPorCodigoInexistente() {
-        var codigo = 7L;
-        when(pedidoMongoRepository.findByCodigo(codigo)).thenThrow(EntityNotFoundException.class);
+        when(pedidoMongoRepository.findByCodigo(Mockito.<Long>any())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> pedidoRepository.buscarPorCodigo(codigo),"Pedido com codigo " + codigo + " não encontrado");
+        assertThrows(EntityNotFoundException.class, () -> pedidoRepository.buscarPorCodigo(1L));
+        verify(pedidoMongoRepository).findByCodigo(Mockito.<Long>any());
     }
 
     @Test
