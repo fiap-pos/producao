@@ -1,7 +1,7 @@
 package br.com.fiap.techchallenge.producao.core.usecases;
 
 
-import br.com.fiap.techchallenge.producao.core.ports.in.pedido.BuscaPedidosProducaoInputPort;
+import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.ports.out.pedido.BuscaPedidosOutputPort;
 import br.com.fiap.techchallenge.producao.core.usecases.pedido.BuscaPedidosProducaoUseCase;
 import org.junit.jupiter.api.AfterEach;
@@ -11,26 +11,27 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import static br.com.fiap.techchallenge.producao.utils.PedidoHelper.getListaPedidoDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 class BuscaPedidosProducaoUseCaseTest {
 
-    private BuscaPedidosProducaoInputPort buscaPedidosProducaoInputPort;
-
     @Mock
-    BuscaPedidosOutputPort buscaTodosPedidosOutputPort;
+    private BuscaPedidosOutputPort buscaPedidosOutputPort;
+
+    private BuscaPedidosProducaoUseCase buscaPedidosProducaoUseCase;
 
     AutoCloseable mock;
 
     @BeforeEach
     void setUp() {
         mock = MockitoAnnotations.openMocks(this);
-        buscaPedidosProducaoInputPort = new BuscaPedidosProducaoUseCase(buscaTodosPedidosOutputPort);
+        buscaPedidosProducaoUseCase = new BuscaPedidosProducaoUseCase(buscaPedidosOutputPort);
     }
 
     @AfterEach
@@ -44,9 +45,11 @@ class BuscaPedidosProducaoUseCaseTest {
         @Test
         void buscaPedidoPorPrioridade() {
             var pedidosDTO = getListaPedidoDTO();
-            when(buscaTodosPedidosOutputPort.buscarTodos()).thenReturn(pedidosDTO);
+            var statusList = List.of(StatusPedidoEnum.RECEBIDO, StatusPedidoEnum.EM_PREPARACAO, StatusPedidoEnum.PRONTO);
 
-            var listaPedidosBuscados = buscaTodosPedidosOutputPort.buscarTodos();
+            when(buscaPedidosOutputPort.buscarPedidosPorStatus(statusList)).thenReturn(pedidosDTO);
+
+            var listaPedidosBuscados = buscaPedidosProducaoUseCase.buscarPedidosProducao();
 
             assertThat(listaPedidosBuscados).isNotNull();
             assertThat(listaPedidosBuscados).allSatisfy( pedidoBuscado -> {
@@ -60,8 +63,7 @@ class BuscaPedidosProducaoUseCaseTest {
                 assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidosDTO.get(0).dataCriacao());
             });
 
-            verify(buscaTodosPedidosOutputPort, times(1)).buscarTodos();
-            verifyNoMoreInteractions(buscaTodosPedidosOutputPort);
+            verify(buscaPedidosOutputPort, times(1)).buscarPedidosPorStatus(statusList);
         }
     }
 
