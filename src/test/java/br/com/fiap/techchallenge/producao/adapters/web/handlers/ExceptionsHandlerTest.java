@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.producao.adapters.web.handlers;
 
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.BadRequestException;
+import br.com.fiap.techchallenge.producao.core.domain.exceptions.EnexpectedDomainException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityAlreadyExistException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class ExceptionsHandlerTest {
+class ExceptionsHandlerTest {
 
     private ExceptionsHandler exceptionsHandler;
 
@@ -89,5 +90,18 @@ public class ExceptionsHandlerTest {
         assertThat(response.getBody()).isNotNull().isInstanceOf(ErrorDetails.class);
         assertThat(response.getBody().message()).isEqualTo("Requisição inválida.");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldHandleUnexpectedDomainException() {
+        var exception = new EnexpectedDomainException("message");
+        var httpservletRequest = new MockHttpServletRequest();
+
+        var response = exceptionsHandler.handlerEnexpectedDomainException(exception, httpservletRequest);
+
+        assertThat(response).isNotNull().isInstanceOf(ResponseEntity.class);
+        assertThat(response.getBody()).isNotNull().isInstanceOf(ErrorDetails.class);
+        assertThat(response.getBody().message()).isEqualTo(exception.getMessage());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

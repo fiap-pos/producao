@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.producao.adapters.web.handlers;
 
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.BadRequestException;
+import br.com.fiap.techchallenge.producao.core.domain.exceptions.EnexpectedDomainException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityAlreadyExistException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,5 +93,21 @@ public class ExceptionsHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
     }
+
+    @ExceptionHandler(EnexpectedDomainException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorDetails> handlerEnexpectedDomainException(EnexpectedDomainException e, HttpServletRequest request) {
+        var errorDetails = new ErrorDetails.Builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(e.getMessage())
+                .timestamp(System.currentTimeMillis())
+                .build();
+        logger.error(e.getMessage(), e);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
+    }
+
+
+
 
 }
