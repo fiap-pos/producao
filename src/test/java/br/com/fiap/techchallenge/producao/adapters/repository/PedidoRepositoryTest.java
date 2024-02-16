@@ -67,18 +67,20 @@ class PedidoRepositoryTest {
 
         var pedidosBuscados = pedidoRepository.buscarTodos();
 
-        assertThat(pedidosBuscados).isNotNull();
-        assertThat(pedidosBuscados).allSatisfy( pedidoBuscado -> {
-            assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
-            assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
-            assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
-                assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
-                assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
-                assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
-            });
-            assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
-            assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
-        });
+        assertThat(pedidosBuscados)
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy( pedidoBuscado -> {
+                    assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
+                    assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
+                    assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                        assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
+                        assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
+                        assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
+                    });
+                    assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
+                    assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
+                });
 
         verify(pedidoMongoRepository, times(1)).findAll();
         verifyNoMoreInteractions(pedidoMongoRepository);

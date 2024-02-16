@@ -3,7 +3,6 @@ package br.com.fiap.techchallenge.producao.core.usecases.pedido;
 import br.com.fiap.techchallenge.producao.core.domain.entities.Cliente;
 import br.com.fiap.techchallenge.producao.core.domain.entities.ItemPedido;
 import br.com.fiap.techchallenge.producao.core.domain.entities.Pedido;
-import br.com.fiap.techchallenge.producao.core.domain.exceptions.BadRequestException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import br.com.fiap.techchallenge.producao.core.dtos.*;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
@@ -40,8 +39,8 @@ public class CriaPedidoUseCase implements CriaPedidoInputPort {
     private void verificaPedidoExiste(CriaPedidoDTO pedidoIn) {
         try {
             buscarPedidoOutputPort.buscarPorCodigo(pedidoIn.codigo());
-//            throw new BadRequestException("Já existe um pedido com o código informado");
         } catch(EntityNotFoundException ignored) {
+
         }
     }
 

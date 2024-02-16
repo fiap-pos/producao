@@ -51,17 +51,19 @@ class BuscaPedidosProducaoUseCaseTest {
 
             var listaPedidosBuscados = buscaPedidosProducaoUseCase.buscarPedidosProducao();
 
-            assertThat(listaPedidosBuscados).isNotNull();
-            assertThat(listaPedidosBuscados).allSatisfy( pedidoBuscado -> {
-                assertThat(pedidoBuscado.id()).isEqualTo(pedidosDTO.get(0).id());
-                assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
-                    assertThat(item.nome()).isEqualTo(pedidosDTO.get(0).itens().get(0).nome());
-                    assertThat(item.descricao()).isEqualTo(pedidosDTO.get(0).itens().get(0).descricao());
-                    assertThat(item.quantidade()).isEqualTo(pedidosDTO.get(0).itens().get(0).quantidade());
-                });
-                assertThat(pedidoBuscado.status()).isEqualTo(pedidosDTO.get(0).status());
-                assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidosDTO.get(0).dataCriacao());
-            });
+            assertThat(listaPedidosBuscados)
+                    .isNotNull()
+                    .isNotEmpty()
+                    .allSatisfy(pedidoBuscado -> {
+                        assertThat(pedidoBuscado.id()).isEqualTo(pedidosDTO.get(0).id());
+                        assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                            assertThat(item.nome()).isEqualTo(pedidosDTO.get(0).itens().get(0).nome());
+                            assertThat(item.descricao()).isEqualTo(pedidosDTO.get(0).itens().get(0).descricao());
+                            assertThat(item.quantidade()).isEqualTo(pedidosDTO.get(0).itens().get(0).quantidade());
+                        });
+                        assertThat(pedidoBuscado.status()).isEqualTo(pedidosDTO.get(0).status());
+                        assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidosDTO.get(0).dataCriacao());
+                    });
 
             verify(buscaPedidosOutputPort, times(1)).buscarPedidosPorStatus(statusList);
         }
