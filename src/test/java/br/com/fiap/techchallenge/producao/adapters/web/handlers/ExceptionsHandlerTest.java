@@ -1,7 +1,7 @@
 package br.com.fiap.techchallenge.producao.adapters.web.handlers;
 
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.BadRequestException;
-import br.com.fiap.techchallenge.producao.core.domain.exceptions.EnexpectedDomainException;
+import br.com.fiap.techchallenge.producao.core.domain.exceptions.UnexpectedDomainException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityAlreadyExistException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +94,7 @@ class ExceptionsHandlerTest {
 
     @Test
     void shouldHandleUnexpectedDomainException() {
-        var exception = new EnexpectedDomainException("message");
+        var exception = new UnexpectedDomainException("message");
         var httpservletRequest = new MockHttpServletRequest();
 
         var response = exceptionsHandler.handlerEnexpectedDomainException(exception, httpservletRequest);
