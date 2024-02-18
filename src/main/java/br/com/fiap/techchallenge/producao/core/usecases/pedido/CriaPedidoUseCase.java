@@ -1,6 +1,5 @@
 package br.com.fiap.techchallenge.producao.core.usecases.pedido;
 
-import br.com.fiap.techchallenge.producao.core.domain.entities.Cliente;
 import br.com.fiap.techchallenge.producao.core.domain.entities.ItemPedido;
 import br.com.fiap.techchallenge.producao.core.domain.entities.Pedido;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
@@ -29,10 +28,6 @@ public class CriaPedidoUseCase implements CriaPedidoInputPort {
         verificaPedidoExiste(pedidoIn);
         var pedido = new Pedido(pedidoIn.codigo(), StatusPedidoEnum.RECEBIDO);
         adicionaItensPedido(pedido, pedidoIn.itens());
-        if (pedidoIn.clienteNome() != null) {
-            pedido.setCliente(new Cliente(pedidoIn.clienteNome()));
-        }
-
         return criaPedidoOutputPort.criar(new PedidoDTO(pedido));
     }
 
@@ -45,10 +40,10 @@ public class CriaPedidoUseCase implements CriaPedidoInputPort {
     }
 
     private void adicionaItensPedido(Pedido pedido, List<ItemPedidoDTO> itensPedidoIn) {
-        itensPedidoIn.forEach(item -> {
+        itensPedidoIn.forEach(item ->
             pedido.addItemPedido(
                 new ItemPedido(item.nome(), item.descricao(), item.quantidade())
-            );
-        });
+            )
+        );
     }
 }

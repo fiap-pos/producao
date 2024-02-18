@@ -132,7 +132,6 @@ class PedidoRepositoryTest {
         assertThat(pedidoSalvo).isNotNull().isEqualTo(pedidoDTO);
         assertThat(pedidoSalvo.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoSalvo.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoSalvo.cliente()).isEqualTo(pedidoDTO.cliente());
         assertThat(pedidoSalvo.codigo()).isEqualTo(pedidoDTO.codigo());
         assertThat(pedidoSalvo.itens()).isEqualTo(pedidoDTO.itens());
 
@@ -153,7 +152,6 @@ class PedidoRepositoryTest {
         assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
         assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
-        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
     }
 
     @Test
@@ -179,7 +177,6 @@ class PedidoRepositoryTest {
 
         assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
         assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
     }
     @Test
@@ -211,7 +208,6 @@ class PedidoRepositoryTest {
         assertThat(pedidoAtualizado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoAtualizado.itens()).isEqualTo(pedidoDTO.itens());
         assertThat(pedidoAtualizado.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoAtualizado.cliente()).isEqualTo(pedidoDTO.cliente());
     }
 
     @Test

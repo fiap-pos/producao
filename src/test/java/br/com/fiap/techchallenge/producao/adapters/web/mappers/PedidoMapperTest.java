@@ -29,7 +29,6 @@ class PedidoMapperTest {
         // Assert
         assertThat(pedidoResponse).isNotNull();
         assertThat(pedidoResponse.getId()).isEqualTo(pedidoDTO.id());
-        assertThat(pedidoResponse.getClienteNome()).isEqualTo(pedidoDTO.cliente().nome());
         assertThat(pedidoResponse.getItens()).allSatisfy(item -> {
             assertThat(item).isNotNull().isInstanceOf(ItemPedidoResponse.class);
         });
@@ -47,17 +46,18 @@ class PedidoMapperTest {
         var listaPedidoResponse = pedidoMapper.toPedidoListResponse(listaPedidoDTO);
 
         // Assert
-        assertThat(listaPedidoResponse).isNotNull();
-        assertThat(listaPedidoResponse).allSatisfy(pedidoResponse -> {
-            assertThat(pedidoResponse).isNotNull().isInstanceOf(PedidoResponse.class);
-            assertThat(pedidoResponse.getId()).isEqualTo(listaPedidoDTO.get(0).id());
-            assertThat(pedidoResponse.getClienteNome()).isEqualTo(listaPedidoDTO.get(0).cliente().nome());
-            assertThat(pedidoResponse.getItens()).allSatisfy(item -> {
-                assertThat(item).isNotNull().isInstanceOf(ItemPedidoResponse.class);
-            });
-            assertThat(pedidoResponse.getItens().get(0).getNome()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).nome());
-            assertThat(pedidoResponse.getItens().get(0).getDescricao()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).descricao());
-            assertThat(pedidoResponse.getItens().get(0).getQuantidade()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).quantidade());
-        });
+        assertThat(listaPedidoResponse)
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy(pedidoResponse -> {
+                    assertThat(pedidoResponse).isNotNull().isInstanceOf(PedidoResponse.class);
+                    assertThat(pedidoResponse.getId()).isEqualTo(listaPedidoDTO.get(0).id());
+                    assertThat(pedidoResponse.getItens()).allSatisfy(item -> {
+                        assertThat(item).isNotNull().isInstanceOf(ItemPedidoResponse.class);
+                    });
+                    assertThat(pedidoResponse.getItens().get(0).getNome()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).nome());
+                    assertThat(pedidoResponse.getItens().get(0).getDescricao()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).descricao());
+                    assertThat(pedidoResponse.getItens().get(0).getQuantidade()).isEqualTo(listaPedidoDTO.get(0).itens().get(0).quantidade());
+                });
     }
 }

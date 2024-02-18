@@ -14,25 +14,23 @@ public class Pedido {
 
     @Indexed(unique = true)
     private Long codigo;
-    private Cliente cliente;
+
     private List<ItemPedido> itens;
     private StatusPedidoEnum status;
     private LocalDateTime data;
 
     public Pedido() {}
 
-    public Pedido(Long codigo, Cliente cliente, List<ItemPedido> itens, StatusPedidoEnum status, LocalDateTime data) {
+    public Pedido(Long codigo, List<ItemPedido> itens, StatusPedidoEnum status, LocalDateTime data) {
         this.codigo = codigo;
-        this.cliente = cliente;
         this.itens = itens;
         this.status = status;
         this.data = data;
     }
 
-    public Pedido(String id, Long codigo, Cliente cliente, List<ItemPedido> itens, StatusPedidoEnum status, LocalDateTime data) {
+    public Pedido(String id, Long codigo, List<ItemPedido> itens, StatusPedidoEnum status, LocalDateTime data) {
         this.id = id;
         this.codigo = codigo;
-        this.cliente = cliente;
         this.itens = itens;
         this.status = status;
         this.data = data;
@@ -48,14 +46,6 @@ public class Pedido {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
 
     public List<ItemPedido> getItens() {
