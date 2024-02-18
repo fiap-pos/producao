@@ -7,22 +7,16 @@ import br.com.fiap.techchallenge.producao.adapters.web.models.responses.ItemPedi
 import br.com.fiap.techchallenge.producao.adapters.web.models.responses.PedidoResponse;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.dtos.AtualizaStatusPedidoDTO;
-import br.com.fiap.techchallenge.producao.core.dtos.ClienteDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.CriaPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.ItemPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-
-import static br.com.fiap.techchallenge.producao.utils.ClienteHelper.getCliente;
-import static br.com.fiap.techchallenge.producao.utils.ClienteHelper.getClienteDTO;
 
 public abstract class PedidoHelper {
     private static final String PEDIDO_ID = "1";
     private static final Long CODIGO = 1L;
-    private static final ClienteDTO CLIENTE_NOME = getClienteDTO();
     private static final List<ItemPedidoDTO> ITENS = List.of(getItemPedidoDTO());
     private static final StatusPedidoEnum PEDIDO_STATUS = StatusPedidoEnum.RECEBIDO;
     private static final LocalDateTime DATA_CRIACAO = LocalDateTime.parse("2024-01-08T20:31:51.620293057");
@@ -32,7 +26,7 @@ public abstract class PedidoHelper {
 
 
     public static PedidoDTO getPedidoDTO() {
-        return new PedidoDTO(PEDIDO_ID, CODIGO, CLIENTE_NOME, ITENS, PEDIDO_STATUS, DATA_CRIACAO);
+        return new PedidoDTO(PEDIDO_ID, CODIGO, ITENS, PEDIDO_STATUS, DATA_CRIACAO);
     }
     public static List<PedidoDTO> getListaPedidoDTO() {
         return List.of(getPedidoDTO());
@@ -40,22 +34,18 @@ public abstract class PedidoHelper {
 
     public static Pedido getPedido() {
         var itens = List.of(getItemPedido());
-        return new Pedido( PEDIDO_ID,CODIGO, getCliente(), itens, PEDIDO_STATUS, DATA_CRIACAO);
+        return new Pedido( PEDIDO_ID,CODIGO, itens, PEDIDO_STATUS, DATA_CRIACAO);
     }
 
     public static PedidoResponse getPedidoResponse(){
-        return new PedidoResponse(PEDIDO_ID, CODIGO, CLIENTE_NOME.nome(), List.of(getItemPedidoResponse()), PEDIDO_STATUS, DATA_CRIACAO);
+        return new PedidoResponse(PEDIDO_ID, CODIGO, List.of(getItemPedidoResponse()), PEDIDO_STATUS, DATA_CRIACAO);
     }
     public static List<Pedido> getListaPedido() {
         return List.of(getPedido());
     }
 
     public static CriaPedidoDTO getCriaPedidoDTO() {
-        return new CriaPedidoDTO(1L, CLIENTE_NOME.nome(), ITENS);
-    }
-
-    public static CriaPedidoDTO getCriaPedidoDTOSemCliente() {
-        return new CriaPedidoDTO(1L, null, ITENS);
+        return new CriaPedidoDTO(1L, ITENS);
     }
 
     public static ItemPedidoDTO getItemPedidoDTO() {

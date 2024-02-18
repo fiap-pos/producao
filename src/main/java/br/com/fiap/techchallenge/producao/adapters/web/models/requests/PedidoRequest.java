@@ -10,8 +10,6 @@ public class PedidoRequest{
 
     private Long codigo;
 
-    private String clienteNome;
-
     private List<ItemPedidoRequest> itens;
 
     public PedidoRequest() {
@@ -21,18 +19,11 @@ public class PedidoRequest{
         return codigo;
     }
 
-    public String getClienteNome() {
-        return clienteNome;
-    }
     @NotNull(message = "O campo 'itens' é obrigatório")
     public List<ItemPedidoRequest> getItens() {
         return itens;
     }
 
-    public PedidoRequest(String clienteNome, List<ItemPedidoRequest> itens) {
-        this.clienteNome = clienteNome;
-        this.itens = itens;
-    }
     public PedidoRequest(List<ItemPedidoRequest> itens) {
         this.itens = itens;
     }
@@ -44,17 +35,12 @@ public class PedidoRequest{
     public CriaPedidoDTO toCriaPedidoDTO() {
         return new CriaPedidoDTO(
                 codigo,
-                clienteNome,
                 mapItens()
         );
     }
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
-    }
-
-    public void setClienteNome(String clienteNome) {
-        this.clienteNome = clienteNome;
     }
 
     public void setItens(List<ItemPedidoRequest> itens) {

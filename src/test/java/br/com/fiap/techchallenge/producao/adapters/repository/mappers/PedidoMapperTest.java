@@ -38,7 +38,6 @@ class PedidoMapperTest {
 
         assertThat(pedido).isNotNull().isInstanceOf(Pedido.class);
         assertThat(pedido.getCodigo()).isEqualTo(pedidoDTO.codigo());
-        assertThat(pedido.getCliente().getNome()).isEqualTo(pedidoDTO.cliente().nome());
         assertThat(pedido.getStatus()).isEqualTo(pedidoDTO.status());
 
         assertThat(pedido.getItens()).allSatisfy(item -> {
@@ -58,7 +57,6 @@ class PedidoMapperTest {
         assertThat(pedidoDTO).isNotNull().isInstanceOf(PedidoDTO.class);
         assertThat(pedidoDTO.id()).isEqualTo(pedido.getId());
         assertThat(pedidoDTO.codigo()).isEqualTo(pedido.getCodigo());
-        assertThat(pedidoDTO.cliente().nome()).isEqualTo(pedido.getCliente().getNome());
         assertThat(pedidoDTO.status()).isEqualTo(pedido.getStatus());
 
         assertThat(pedidoDTO.itens()).allSatisfy(item -> {
