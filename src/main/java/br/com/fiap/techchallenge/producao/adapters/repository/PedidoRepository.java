@@ -4,10 +4,14 @@ import br.com.fiap.techchallenge.producao.adapters.repository.mappers.PedidoMapp
 import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.mongo.PedidoMongoRepository;
 import br.com.fiap.techchallenge.producao.adapters.repository.sqs.PedidoSqsPublisher;
+import br.com.fiap.techchallenge.producao.core.domain.exceptions.UnexpectedDomainException;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
 import br.com.fiap.techchallenge.producao.core.ports.out.pedido.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +19,8 @@ import java.util.List;
 @Repository
 public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPedidoOutputPort,
         BuscaPedidosOutputPort, BuscarPedidoOutputPort {
+
+    private final Logger logger = LoggerFactory.getLogger(PedidoRepository.class);
 
     private final PedidoMongoRepository pedidoMongoRepository;
     private final PedidoMapper pedidoMapper;
@@ -51,7 +57,12 @@ public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPed
         pedidoBuscado.setStatus(status);
         var pedido = pedidoMongoRepository.save(pedidoBuscado);
         var pedidoDTO = pedidoMapper.toPedidoDTO(pedido);
-        pedidoSqsPublisher.publicaAtualizacaoFilaProducao(pedidoDTO);
+        try {
+            pedidoSqsPublisher.publicaAtualizacaoFilaProducao(pedidoDTO);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage(), e);
+            throw new UnexpectedDomainException("Erro ao publicar pedido na fila de produção");
+        }
         return pedidoDTO;
     }
 
