@@ -48,7 +48,7 @@ public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPed
     public PedidoDTO criar(PedidoDTO pedidoIn) {
         var pedido = pedidoMapper.toPedido(pedidoIn);
         var pedidoSalvo = pedidoMongoRepository.save(pedido);
-        return pedidoMapper.toPedidoDTO(pedidoSalvo);
+        return publicaFilaProducao(pedidoSalvo);
     }
 
     @Override
@@ -56,6 +56,10 @@ public class PedidoRepository implements CriaPedidoOutputPort, AtualizaStatusPed
         var pedidoBuscado = buscarPedidoPorId(id);
         pedidoBuscado.setStatus(status);
         var pedido = pedidoMongoRepository.save(pedidoBuscado);
+        return publicaFilaProducao(pedido);
+    }
+
+    private PedidoDTO publicaFilaProducao(Pedido pedido) {
         var pedidoDTO = pedidoMapper.toPedidoDTO(pedido);
         try {
             pedidoSqsPublisher.publicaAtualizacaoFilaProducao(pedidoDTO);
