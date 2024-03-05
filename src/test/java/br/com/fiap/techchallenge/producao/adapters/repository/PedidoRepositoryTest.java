@@ -5,14 +5,15 @@ import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.mongo.PedidoMongoRepository;
 import br.com.fiap.techchallenge.producao.adapters.repository.sqs.PedidoSqsPublisher;
 import br.com.fiap.techchallenge.producao.core.domain.entities.enums.StatusPedidoEnum;
+import br.com.fiap.techchallenge.producao.core.domain.exceptions.UnexpectedDomainException;
 import br.com.fiap.techchallenge.producao.core.domain.exceptions.EntityNotFoundException;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
@@ -27,12 +28,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 class PedidoRepositoryTest {
-    @InjectMocks
+
     PedidoRepository pedidoRepository;
 
     @Mock
@@ -49,7 +48,7 @@ class PedidoRepositoryTest {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
-        var pedidoRepository = new PedidoRepository(pedidoMongoRepository, pedidoMapper, pedidoSqsPublisher);
+        pedidoRepository = new PedidoRepository(pedidoMongoRepository, pedidoMapper, pedidoSqsPublisher);
     }
 
     @AfterEach
@@ -67,18 +66,20 @@ class PedidoRepositoryTest {
 
         var pedidosBuscados = pedidoRepository.buscarTodos();
 
-        assertThat(pedidosBuscados).isNotNull();
-        assertThat(pedidosBuscados).allSatisfy( pedidoBuscado -> {
-            assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
-            assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
-            assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
-                assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
-                assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
-                assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
-            });
-            assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
-            assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
-        });
+        assertThat(pedidosBuscados)
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy( pedidoBuscado -> {
+                    assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
+                    assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
+                    assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                        assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
+                        assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
+                        assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
+                    });
+                    assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
+                    assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
+                });
 
         verify(pedidoMongoRepository, times(1)).findAll();
         verifyNoMoreInteractions(pedidoMongoRepository);
@@ -96,18 +97,20 @@ class PedidoRepositoryTest {
 
         var pedidosBuscados = pedidoRepository.buscarPedidosPorStatus(listaStatus);
 
-        assertThat(pedidosBuscados).isNotNull();
-        assertThat(pedidosBuscados).allSatisfy( pedidoBuscado -> {
-            assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
-            assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
-            assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
-                assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
-                assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
-                assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
-            });
-            assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
-            assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
-        });
+        assertThat(pedidosBuscados)
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy( pedidoBuscado -> {
+                    assertThat(pedidoBuscado.id()).isEqualTo(pedidos.get(0).getId());
+                    assertThat(pedidoBuscado.codigo()).isEqualTo(pedidos.get(0).getCodigo());
+                    assertThat(pedidoBuscado.itens()).allSatisfy( item -> {
+                        assertThat(item.nome()).isEqualTo(pedidos.get(0).getItens().get(0).getNome());
+                        assertThat(item.descricao()).isEqualTo(pedidos.get(0).getItens().get(0).getDescricao());
+                        assertThat(item.quantidade()).isEqualTo(pedidos.get(0).getItens().get(0).getQuantidade());
+                    });
+                    assertThat(pedidoBuscado.status()).isEqualTo(pedidos.get(0).getStatus());
+                    assertThat(pedidoBuscado.dataCriacao()).isEqualTo(pedidos.get(0).getData());
+                });
 
         verify(pedidoMongoRepository, times(1)).findAllByStatusIn(anyList());
         verifyNoMoreInteractions(pedidoMongoRepository);
@@ -129,7 +132,6 @@ class PedidoRepositoryTest {
         assertThat(pedidoSalvo).isNotNull().isEqualTo(pedidoDTO);
         assertThat(pedidoSalvo.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoSalvo.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoSalvo.cliente()).isEqualTo(pedidoDTO.cliente());
         assertThat(pedidoSalvo.codigo()).isEqualTo(pedidoDTO.codigo());
         assertThat(pedidoSalvo.itens()).isEqualTo(pedidoDTO.itens());
 
@@ -150,7 +152,6 @@ class PedidoRepositoryTest {
         assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
         assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
-        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
     }
 
     @Test
@@ -176,7 +177,6 @@ class PedidoRepositoryTest {
 
         assertThat(pedidoBuscado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoBuscado.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoBuscado.cliente()).isEqualTo(pedidoDTO.cliente());
         assertThat(pedidoBuscado.codigo()).isEqualTo(pedidoDTO.codigo());
     }
     @Test
@@ -188,7 +188,7 @@ class PedidoRepositoryTest {
     }
 
     @Test
-    void atualizaStatus() {
+    void atualizaStatus() throws JsonProcessingException {
         var id = "1";
         var status = StatusPedidoEnum.RECEBIDO;
         var pedidoDTO = getPedidoDTO();
@@ -202,11 +202,32 @@ class PedidoRepositoryTest {
 
         verify(pedidoMongoRepository, times(1)).save(any(Pedido.class));
         verify(pedidoMapper, times(1)).toPedidoDTO(any(Pedido.class));
+        verify(pedidoSqsPublisher, times(1)).publicaAtualizacaoFilaProducao(pedidoDTO);
 
         assertThat(pedidoAtualizado).isNotNull().isEqualTo(pedidoDTO);
         assertThat(pedidoAtualizado.id()).isEqualTo(pedidoDTO.id());
         assertThat(pedidoAtualizado.itens()).isEqualTo(pedidoDTO.itens());
         assertThat(pedidoAtualizado.status()).isEqualTo(pedidoDTO.status());
-        assertThat(pedidoAtualizado.cliente()).isEqualTo(pedidoDTO.cliente());
+    }
+
+    @Test
+    void atualizaStatusJsonException() throws JsonProcessingException {
+        var id = "1";
+        var status = StatusPedidoEnum.RECEBIDO;
+        var pedidoDTO = getPedidoDTO();
+        var pedido = getPedido();
+
+        when(pedidoMongoRepository.findById(anyString())).thenReturn(Optional.of(pedido));
+        when(pedidoMongoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(pedidoMapper.toPedidoDTO(any(Pedido.class))).thenReturn(pedidoDTO);
+
+        doThrow(JsonProcessingException.class).when(pedidoSqsPublisher).publicaAtualizacaoFilaProducao(pedidoDTO);
+
+
+        assertThrows(UnexpectedDomainException.class, () -> pedidoRepository.atualizarStatus(id, status));
+
+        verify(pedidoMongoRepository, times(1)).save(any(Pedido.class));
+        verify(pedidoMapper, times(1)).toPedidoDTO(any(Pedido.class));
+        verify(pedidoSqsPublisher, times(1)).publicaAtualizacaoFilaProducao(pedidoDTO);
     }
 }

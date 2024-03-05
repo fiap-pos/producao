@@ -8,16 +8,14 @@ import java.util.List;
 public class PedidoResponse {
     private String id;
     private Long codigo;
-    private String clienteNome;
     private List<ItemPedidoResponse> itens;
     private StatusPedidoEnum status;
     private BigDecimal valorTotal;
     private LocalDateTime data;
 
-    public PedidoResponse(String id, Long codigo, String clienteNome, List<ItemPedidoResponse> itens, StatusPedidoEnum status, LocalDateTime data) {
+    public PedidoResponse(String id, Long codigo, List<ItemPedidoResponse> itens, StatusPedidoEnum status, LocalDateTime data) {
         this.id = id;
         this.codigo = codigo;
-        this.clienteNome = clienteNome;
         this.itens = itens;
         this.status = status;
         this.data = data;
@@ -37,14 +35,6 @@ public class PedidoResponse {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
-    }
-
-    public String getClienteNome() {
-        return clienteNome;
-    }
-
-    public void setClienteNome(String clienteNome) {
-        this.clienteNome = clienteNome;
     }
 
     public List<ItemPedidoResponse> getItens() {

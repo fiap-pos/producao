@@ -73,7 +73,6 @@ class PedidoControllerTest {
     void setUp() {
         itemPedidoRequest.setQuantidade(10);
         pedidoRequest.setCodigo(1L);
-        pedidoRequest.setClienteNome("Cliente Nome");
         pedidoRequest.setItens(Collections.singletonList(itemPedidoRequest));
 
         atualizaStatusPedidoRequest.setStatus(StatusPedidoEnum.FINALIZADO);

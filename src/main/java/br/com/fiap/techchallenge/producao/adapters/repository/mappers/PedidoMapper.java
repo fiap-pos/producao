@@ -2,8 +2,6 @@ package br.com.fiap.techchallenge.producao.adapters.repository.mappers;
 
 import br.com.fiap.techchallenge.producao.adapters.repository.models.ItemPedido;
 import br.com.fiap.techchallenge.producao.adapters.repository.models.Pedido;
-import br.com.fiap.techchallenge.producao.adapters.repository.models.Cliente;
-import br.com.fiap.techchallenge.producao.core.dtos.ClienteDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.ItemPedidoDTO;
 import br.com.fiap.techchallenge.producao.core.dtos.PedidoDTO;
 import org.springframework.stereotype.Component;
@@ -13,23 +11,15 @@ import java.util.List;
 @Component
 public class PedidoMapper {
 
-    public Pedido toPedido(PedidoDTO pedidoIn){
-
-        Cliente cliente = null;
-        if (pedidoIn.getNomeCliente() != null) {
-            cliente = new Cliente(pedidoIn.getNomeCliente());
-        }
-
+    public Pedido toPedido(PedidoDTO pedidoIn) {
         var itens = mapItens(pedidoIn.itens());
 
         return new Pedido(
             pedidoIn.codigo(),
-            cliente,
             itens,
             pedidoIn.status(),
             pedidoIn.dataCriacao()
         );
-
     }
 
     private List<ItemPedido> mapItens(List<ItemPedidoDTO> itens) {
@@ -41,16 +31,9 @@ public class PedidoMapper {
     }
 
     public PedidoDTO toPedidoDTO(Pedido pedido) {
-        ClienteDTO clienteDTO= null;
-        var cliente = pedido.getCliente();
-        if (cliente != null) {
-            clienteDTO = new ClienteDTO(cliente.getNome());
-        }
-
         return new PedidoDTO(
                 pedido.getId(),
                 pedido.getCodigo(),
-                clienteDTO,
                 mapItensToDTO(pedido.getItens()),
                 pedido.getStatus(),
                 pedido.getData()

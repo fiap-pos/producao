@@ -9,7 +9,6 @@ import java.util.List;
 public class Pedido {
     private String id;
     private Long codigo;
-    private Cliente cliente;
     private List<ItemPedido> itens;
     private StatusPedidoEnum status;
 
@@ -34,14 +33,6 @@ public class Pedido {
 
     public Long getCodigo() {
         return codigo;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
 
     public List<ItemPedido> getItens() {

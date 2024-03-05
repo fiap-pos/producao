@@ -9,14 +9,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("PedidoMapperWeb")
+@Component("pedidoMapperWeb")
 public class PedidoMapper {
 
     public PedidoResponse toPedidoResponse(PedidoDTO pedido){
         return new PedidoResponse(
                 pedido.id(),
                 pedido.codigo(),
-                pedido.getNomeCliente(),
                 toItemPedidoResponseList(pedido.itens()),
                 pedido.status(),
                 pedido.dataCriacao()
